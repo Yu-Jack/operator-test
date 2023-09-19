@@ -76,6 +76,13 @@ make manifests
 
 More information can be found via the [Kubebuilder Documentation](https://book.kubebuilder.io/introduction.html)
 
+## Backup
+
+```sh
+operator-sdk init --domain=jack.operator.test --repo=github.com/Yu-Jack/operator-test
+operator-sdk create api --group=jack --version=v1alpha1 --kind=JackOperatorTest --resource=true --controller=true
+```
+
 ## License
 
 Copyright 2023.

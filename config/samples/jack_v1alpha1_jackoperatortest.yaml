@@ -1,0 +1,12 @@
+apiVersion: jack.jack.operator.test/v1alpha1
+kind: JackOperatorTest
+metadata:
+  labels:
+    app.kubernetes.io/name: jackoperatortest
+    app.kubernetes.io/instance: jackoperatortest-sample
+    app.kubernetes.io/part-of: jack-operator-test
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: jack-operator-test
+  name: jackoperatortest-sample
+spec:
+  # TODO(user): Add fields here

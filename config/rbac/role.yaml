@@ -1,0 +1,33 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - jack.jack.operator.test
+  resources:
+  - jackoperatortests
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - jack.jack.operator.test
+  resources:
+  - jackoperatortests/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - jack.jack.operator.test
+  resources:
+  - jackoperatortests/status
+  verbs:
+  - get
+  - patch
+  - update

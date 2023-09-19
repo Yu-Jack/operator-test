@@ -1,0 +1,7 @@
+apiVersion: jack.jack.operator.test/v1alpha1
+kind: JackOperatorTest
+metadata:
+  name: test-01
+  namespace: jack-operator-test-system
+spec:
+  foo: "hi"

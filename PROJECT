@@ -20,4 +20,13 @@ resources:
   kind: JackOperatorTest
   path: github.com/Yu-Jack/operator-test/api/v1alpha1
   version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: jack.operator.test
+  group: jack
+  kind: CronJob
+  path: github.com/Yu-Jack/operator-test/api/v1alpha1
+  version: v1alpha1
 version: "3"

@@ -28,45 +28,47 @@ import (
 	jackv1alpha1 "github.com/Yu-Jack/operator-test/api/v1alpha1"
 )
 
-// JackOperatorTestReconciler reconciles a JackOperatorTest object
-type JackOperatorTestReconciler struct {
+// CronJobReconciler reconciles a CronJob object
+type CronJobReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=jack.jack.operator.test,resources=jackoperatortests,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=jack.jack.operator.test,resources=jackoperatortests/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=jack.jack.operator.test,resources=jackoperatortests/finalizers,verbs=update
+//+kubebuilder:rbac:groups=jack.jack.operator.test,resources=cronjobs,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=jack.jack.operator.test,resources=cronjobs/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=jack.jack.operator.test,resources=cronjobs/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
 // TODO(user): Modify the Reconcile function to compare the state specified by
-// the JackOperatorTest object against the actual cluster state, and then
+// the CronJob object against the actual cluster state, and then
 // perform operations to make the cluster state reflect the state specified by
 // the user.
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.14.1/pkg/reconcile
-func (r *JackOperatorTestReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *CronJobReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
-	fmt.Println("====start - JackOperatorTestReconciler====")
+	// TODO(user): your logic here
+
+	fmt.Println("====start - CronJobReconciler====")
 	fmt.Printf("%#v\n", req)
 
-	var jackOperatorTest jackv1alpha1.JackOperatorTest
-	if err := r.Get(ctx, req.NamespacedName, &jackOperatorTest); err != nil {
+	var cronJob jackv1alpha1.CronJob
+	if err := r.Get(ctx, req.NamespacedName, &cronJob); err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("%#v\n", jackOperatorTest)
+	fmt.Printf("%#v\n", cronJob)
 	// TODO(user): your logic here
-	fmt.Println("====end - JackOperatorTestReconciler====")
+	fmt.Println("====end - CronJobReconciler====")
 
 	return ctrl.Result{}, nil
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *JackOperatorTestReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *CronJobReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&jackv1alpha1.JackOperatorTest{}).
+		For(&jackv1alpha1.CronJob{}).
 		Complete(r)
 }

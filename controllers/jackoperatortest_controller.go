@@ -50,8 +50,16 @@ type JackOperatorTestReconciler struct {
 func (r *JackOperatorTestReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
+	fmt.Println("start ~~~~~~~~~~~~~~")
+	fmt.Printf("%#v\n", req)
+
+	var jackOperatorTest jackv1alpha1.JackOperatorTest
+	if err := r.Get(ctx, req.NamespacedName, &jackOperatorTest); err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("%#v\n", jackOperatorTest)
 	// TODO(user): your logic here
-	fmt.Println("Runningd~~~~~~~~~~~~~~")
+	fmt.Println("end ~~~~~~~~~~~~~~")
 
 	return ctrl.Result{}, nil
 }

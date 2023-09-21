@@ -81,7 +81,11 @@ More information can be found via the [Kubebuilder Documentation](https://book.k
 ```sh
 operator-sdk init --domain=jack.operator.test --repo=github.com/Yu-Jack/operator-test
 operator-sdk create api --group=jack --version=v1alpha1 --kind=JackOperatorTest --resource=true --controller=true
+
+./hack/update-codegen.sh # use k8s.io/code-generator to generate deepcopy clientset informers listers
 ```
+
+
 
 ## License
 

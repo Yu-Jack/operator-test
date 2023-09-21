@@ -69,10 +69,10 @@ func (c *Controller) syncToStdout(key string) error {
 	}
 
 	// Get the Foo resource with this namespace/name
-	foo, err := c.lister.CronJobs(namespace).Get(name)
+	cronJob, err := c.lister.CronJobs(namespace).Get(name)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			utilruntime.HandleError(fmt.Errorf("foo '%s' in work queue no longer exists", key))
+			utilruntime.HandleError(fmt.Errorf("cronJob '%s' in work queue no longer exists", key))
 			return nil
 		}
 
@@ -80,8 +80,9 @@ func (c *Controller) syncToStdout(key string) error {
 	}
 
 	// Note that you also have to check the uid if you have a local controlled resource, which
-	// is dependent on the actual instance, to detect that a foo was recreated with the same name
-	fmt.Printf("Sync/Add/Update for foo %s\n", foo.GetName())
+	// is dependent on the actual instance, to detect that a cronJob was recreated with the same name
+	fmt.Printf("Sync/Add/Update for cronJob %s\n\n%#v\n", cronJob.GetName(), cronJob)
+	fmt.Println(cronJob.Spec.Foo)
 
 	return nil
 }

@@ -65,14 +65,7 @@ func main() {
 		setupLog.Error(err, "unable to create controller")
 		os.Exit(1)
 	}
-	// 创建用于校验 CronJob 的 webhook
-	err = ctrl.NewWebhookManagedBy(mgr).
-		For(&api.CronJob{}).
-		Complete()
-	if err != nil {
-		setupLog.Error(err, "unable to create webhook")
-		os.Exit(1)
-	}
+
 	// 启动 Manager，Manager 将启动其管理的所有 controller 以及 webhook server
 	setupLog.Info("starting manager")
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {

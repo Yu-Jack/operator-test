@@ -6,16 +6,35 @@ import (
 	"os"
 
 	api "github.com/Yu-Jack/operator-test/apis/cronjob/v1alpha1"
+	appsv1 "k8s.io/api/apps/v1"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 )
 
 var (
 	setupLog = ctrl.Log.WithName("setup")
 )
+
+type podReconciler struct {
+	client.Client
+}
+
+func (r *podReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	fmt.Println("---- replica set ---- ")
+	rs := &appsv1.ReplicaSet{}
+	err := r.Get(ctx, req.NamespacedName, rs)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+	fmt.Println("rs.Spec.Replicas :", *rs.Spec.Replicas)
+	fmt.Println("rs.Status.Replicas :", rs.Status.Replicas)
+	fmt.Println("---- replica set ---- ")
+	return ctrl.Result{}, nil
+}
 
 type reconciler struct {
 	client.Client
@@ -61,6 +80,35 @@ func main() {
 		Complete(&reconciler{
 			Client: mgr.GetClient(),
 		})
+	if err != nil {
+		setupLog.Error(err, "unable to create controller")
+		os.Exit(1)
+	}
+
+	err = ctrl.NewControllerManagedBy(mgr).
+		For(&appsv1.ReplicaSet{}).
+		Complete(&podReconciler{
+			Client: mgr.GetClient(),
+		})
+	if err != nil {
+		setupLog.Error(err, "unable to create controller")
+		os.Exit(1)
+	}
+
+	err = ctrl.NewControllerManagedBy(mgr).
+		For(&appsv1.ReplicaSet{}).
+		Complete(reconcile.Func(func(ctx context.Context, o reconcile.Request) (reconcile.Result, error) {
+			fmt.Println("---- replica set in anonymous function ---- ")
+			rs := &appsv1.ReplicaSet{}
+			err := mgr.GetClient().Get(ctx, o.NamespacedName, rs)
+			if err != nil {
+				return reconcile.Result{}, err
+			}
+			fmt.Println("rs.Spec.Replicas :", *rs.Spec.Replicas)
+			fmt.Println("rs.Status.Replicas :", rs.Status.Replicas)
+			fmt.Println("---- replica set  in anonymous function ---- ")
+			return reconcile.Result{}, nil
+		}))
 	if err != nil {
 		setupLog.Error(err, "unable to create controller")
 		os.Exit(1)

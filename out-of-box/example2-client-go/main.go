@@ -13,6 +13,7 @@ import (
 	custominformers "github.com/Yu-Jack/operator-test/generated/informers/externalversions"
 	customlisters "github.com/Yu-Jack/operator-test/generated/listers/cronjob/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	apiv1meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -70,6 +71,7 @@ func (c *Controller) syncToStdout(key string) error {
 
 	// Get the Foo resource with this namespace/name
 	cronJob, err := c.lister.CronJobs(namespace).Get(name)
+
 	if err != nil {
 		if errors.IsNotFound(err) {
 			utilruntime.HandleError(fmt.Errorf("cronJob '%s' in work queue no longer exists", key))
@@ -81,8 +83,12 @@ func (c *Controller) syncToStdout(key string) error {
 
 	// Note that you also have to check the uid if you have a local controlled resource, which
 	// is dependent on the actual instance, to detect that a cronJob was recreated with the same name
-	fmt.Printf("Sync/Add/Update for cronJob %s\n\n%#v\n", cronJob.GetName(), cronJob)
-	fmt.Println(cronJob.Spec.Foo)
+
+	fmt.Println("======")
+	fmt.Printf("Sync/Add/Update for cronJob %s %#v\n", cronJob.GetName(), cronJob)
+	fmt.Println("======")
+
+	//	c.queue.AddAfter(key, 5*time.Second)
 
 	return nil
 }
@@ -181,14 +187,20 @@ func main() {
 	// register the event handler with the informer
 	informer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
+			fmt.Println("AddFunc--------------")
 			key, err := cache.MetaNamespaceKeyFunc(obj)
 			if err == nil {
 				queue.Add(key)
 			}
 		},
 		UpdateFunc: func(old interface{}, new interface{}) {
+			fmt.Println("UpdateFunc--------------")
+			if old.(apiv1meta.Common).GetResourceVersion() == new.(apiv1meta.Common).GetResourceVersion() {
+				fmt.Println("ResourceVersion is same, reject request.")
+				return
+			}
+
 			key, err := cache.MetaNamespaceKeyFunc(new)
-			fmt.Println("UpdateFunc: ", old, new)
 			if err == nil {
 				queue.Add(key)
 			}
